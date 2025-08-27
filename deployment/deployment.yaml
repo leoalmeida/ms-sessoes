@@ -1,0 +1,21 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ms-sessoes
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ms-sessoes
+  template:
+    spec:
+      containers:
+        - name: ms-sessoes
+          image: leoalmeida/ms-sessoes:{{IMAGE_TAG}}
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 8080
+          resources:
+            requests:
+              memory: "1Gi"
+              cpu: "2"
