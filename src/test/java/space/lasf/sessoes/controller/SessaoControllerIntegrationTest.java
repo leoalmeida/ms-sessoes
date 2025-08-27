@@ -14,36 +14,44 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import space.lasf.sessoes.basicos.AbstractIntegrationTest;
-import space.lasf.sessoes.domain.repository.AssociadoRepository;
+import space.lasf.sessoes.domain.model.SessaoStatus;
 import space.lasf.sessoes.domain.repository.VotoRepository;
+import space.lasf.sessoes.dto.PautaDto;
 import space.lasf.sessoes.dto.SessaoDto;
-import space.lasf.sessoes.basicos.AbstractIntegrationTest;
 
 
 public class SessaoControllerIntegrationTest extends AbstractIntegrationTest{
 
+    
+    public static final String SESSAO_API_ENDPOINT = "/v1/sessoes";
 
     @Autowired
     private VotoRepository repository;
     
-    @Autowired
-    private AssociadoRepository associadoRepository;
-    
 
-    private Associado associado;
     private SessaoDto sessao;
 
 
     @BeforeEach
     public void setUp() {
-        associado = gerarAssociado("Marta Rocha", "(51) 99999-5555");
-        sessao = gerarSessaoDto(associado);
-        associadoRepository.save(associado);
+        // Cria pauta para testes
+        PautaDto pauta = new PautaDto();
+        pauta.setId(Double.valueOf(Math.random()*100000).longValue());
+        pauta.setNome("Nome0");
+        pauta.setDescricao("Descricao0");
+        
+        // Cria sessao para testes
+        sessao = new SessaoDto();
+        sessao.setId(Double.valueOf(Math.random()*100000).longValue());
+        sessao.setPautaDto(pauta);
+        sessao.setStatus(SessaoStatus.CREATED);
+        sessao.setDataInicioSessao(null);
+        sessao.setDataFimSessao(null);
+        sessao.setTotalizadores(null);
     }
 
     @AfterEach
     void clean() {
-        associadoRepository.deleteById(associado.getId());
     }
     
     @Test
@@ -53,7 +61,7 @@ public class SessaoControllerIntegrationTest extends AbstractIntegrationTest{
         items.add(sessao);
         String endpoint = UriComponentsBuilder
                     .fromUriString(SESSAO_API_ENDPOINT)
-                    .queryParam("idAssociado", associado.getId())
+                    .queryParam("idAssociado", 1L)
                     .build()
                     .toUriString();
 

@@ -24,20 +24,20 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 
-import space.lasf.sessoes.basicos.TestFactory;
 import space.lasf.sessoes.domain.model.SessaoStatus;
 import space.lasf.sessoes.domain.repository.SessaoRepository;
 import space.lasf.sessoes.dto.SessaoDto;
-import space.lasf.sessoes.dto.mapper.SessaoMapper;
 import space.lasf.sessoes.service.SessaoService;
-import space.lasf.sessoes.basicos.TestFactory;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest
 @AutoConfigureMockMvc
 @ActiveProfiles("test")
-public class SessaoRestControllerIntegrationTest extends TestFactory{
+public class SessaoRestControllerIntegrationTest {
 
+  
+    public static final String SESSAO_API_ENDPOINT = "/v1/sessoes";
+    
     @Autowired
     private MockMvc mvc;
 
@@ -50,22 +50,16 @@ public class SessaoRestControllerIntegrationTest extends TestFactory{
     @Test
     public void testePedido_quandoConsultarTodosSessoes_entaoRetornaSessoesComSucesso()
       throws Exception {
-
-        Associado associado = Associado.builder()
-                          .id(Double.valueOf(Math.random()*100000).longValue())
-                          .nome("Joaquim Nabuco")
-                          .email("joaquim.nabuco@exemplo.cim")
-                          .telefone("(41) 99999-4444")
-                          .build();
+        
         SessaoDto sessao1 = SessaoDto.builder()
-                          .status(SessaoStatus.CLOSED.name())
+                          .status(SessaoStatus.CLOSED)
                           .id(Double.valueOf(Math.random()*100000).longValue()).build();
         SessaoDto sessao2 = SessaoDto.builder()
-                        .status(SessaoStatus.OPEN_TO_VOTE.name())
+                        .status(SessaoStatus.OPEN_TO_VOTE)
                         .id(Double.valueOf(Math.random()*100000).longValue()).build();
         List<SessaoDto> todasSessoes = Arrays.asList(sessao1,sessao2);
 
-        doReturn(SessaoMapper.toListSessaoEntity(todasSessoes,associado))
+        doReturn(todasSessoes)
           .when(service).buscarTodasSessoes();
 
         mvc.perform(get(SESSAO_API_ENDPOINT))

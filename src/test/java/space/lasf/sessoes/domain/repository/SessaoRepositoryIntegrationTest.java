@@ -15,18 +15,16 @@ import org.springframework.boot.test.autoconfigure.data.mongo.DataMongoTest;
 
 import org.springframework.test.context.ActiveProfiles;
 
-import space.lasf.sessoes.basicos.TestFactory;
-import space.lasf.sessoes.domain.model.Associado;
 import space.lasf.sessoes.domain.model.Sessao;
+import space.lasf.sessoes.domain.model.SessaoStatus;
 import space.lasf.sessoes.domain.repository.SessaoRepository;
-import space.lasf.sessoes.domain.repository.SessaoRepository;
-import space.lasf.sessoes.basicos.TestFactory;
-
+import space.lasf.sessoes.dto.PautaDto;
+import space.lasf.sessoes.dto.SessaoDto;
 
 //@ExtendWith(SpringExtension.class)
 @DataMongoTest
 @ActiveProfiles("test")
-public class SessaoRepositoryIntegrationTest extends TestFactory{
+public class SessaoRepositoryIntegrationTest {
 
     @Autowired
     private SessaoRepository sessaoRepository;
@@ -34,18 +32,25 @@ public class SessaoRepositoryIntegrationTest extends TestFactory{
     Sessao sessao1;
     Sessao sessao2;
     Sessao sessao3;
-    Pauta pauta1;
+    PautaDto pauta1;
 
     
     @BeforeEach
     public void setUp() {
+        // Criar sessoes
         
-        Associado associado = gerarAssociado(null, null);
-        // Criar sessaos
-        sessao1 = gerarSessao(associado,gerarPauta());
-        sessao2 = gerarSessao(associado,gerarPauta());
-        sessao3 = gerarSessao(associado,gerarPauta());
-
+        sessao1 = Sessao.builder()
+                          .id(Double.valueOf(Math.random()*100000).longValue())
+                          .idPauta(Double.valueOf(Math.random()*100000).longValue())
+                          .build();
+        sessao2 = Sessao.builder()
+                          .id(Double.valueOf(Math.random()*100000).longValue())
+                          .idPauta(Double.valueOf(Math.random()*100000).longValue())
+                          .build();
+        sessao3 = Sessao.builder()
+                          .id(Double.valueOf(Math.random()*100000).longValue())
+                          .idPauta(Double.valueOf(Math.random()*100000).longValue())
+                          .build();
         sessaoRepository.saveAll(Arrays.asList(sessao1,sessao2,sessao3));
     }
 
@@ -64,15 +69,9 @@ public class SessaoRepositoryIntegrationTest extends TestFactory{
     @Test
     void dadoSessao_quandoCriarSessao_entaoSessaoPersistido() {
         // given
-        Pauta pauta1 = new Pauta();
-        pauta1.setId(Double.valueOf(Math.random()*100000).longValue());
-        pauta1.setNome("Produto 1");
-        pauta1.setDescricao("Descrição do Produto 1");
-        
         Sessao sessao1 = Sessao.builder()
                     .id(Double.valueOf(Math.random()*100000).longValue())
-                    .pauta(pauta1)
-                    .idAssociado(Double.valueOf(Math.random()*100000).longValue())
+                    .idPauta(Double.valueOf(Math.random()*100000).longValue())
                     .build();
         
         // when
